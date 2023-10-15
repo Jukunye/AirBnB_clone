@@ -4,30 +4,44 @@
 
 import cmd
 from models import storage
+from models.user import User
+from models.city import City
+from models.state import State
+from models.place import Place
+from models.review import Review
+from models.amenity import Amenity
 from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
-    valid_classes = ["BaseModel"]
+    valid_classes = ["User", "City", "State", "Place", "Review",
+                     "Amenity", "BaseModel"]
 
     def do_create(self, line):
         """Creates a new instance of class BaseModel, and saves it to a JSON
         file, and prints the id
+
+        Usage: create <class name>
         """
         args_for_create = line.split()
+
         if len(args_for_create) == 0:
             print("** class name missing **")
-        elif args_for_create[0] != "BaseModel":
+        elif args_for_create[0] not in self.valid_classes:
             print("** class doesn't exist **")
         else:
-            base_model = BaseModel()
-            base_model.save()
-            print(base_model.id)
+            class_name = args_for_create[0]
+            obj_class = globals()[class_name]
+            new_instance = obj_class()
+            new_instance.save()
+            print(new_instance.id)
 
     def do_show(self, line):
         """Prints the string representation of an instance based on the
         class name and id
+
+        Usage: show <class name> <id>
         """
         args_for_show = line.split()
 
